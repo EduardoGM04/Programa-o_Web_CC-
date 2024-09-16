@@ -1,56 +1,100 @@
 const diaSemana = document.getElementById("dia-semana");
 const dataAtual = document.getElementById("data-atual");
 const horaAtual = document.getElementById("hora-atual");
-const btnRegistrarponto = document.getElementById("btn-registrar-ponto");
+const btnRegistrarPonto = document.getElementById("btn-registrar-ponto");
 
-btnRegistrarponto.addEventListener("click",)
+btnRegistrarPonto.addEventListener("click", register);
 
 diaSemana.textContent = getWeekDay();
 dataAtual.textContent = getCurrentDate();
 
-function register(){
-    alert.
-}
+
+const dialogPonto = document.getElementById("dialog-ponto");
+
+const dialogData = document.getElementById("dialog-data");
+dialogData.textContent = getCurrentDate();
+
+const dialogHora = document.getElementById("dialog-hora");
+dialogHora.textContent = getCurrentTime();
 
 
-
-function updateContentHour(){
-
-
+const btnDialogEntrada = document.getElementById("btn-dialog-entrada");
+btnDialogEntrada.addEventListener("click", () => {
     
+    let currentDate = getCurrentDate();
+    let currentTime = getCurrentTime();
+    let userLocation = getUserLocation();
+
+    ponto = {
+        "date": currentDate,
+        "time": currentTime,
+        "location": userLocation,
+        "id": 1,
+        "type": "entrada"
+    }
+
+    console.log(ponto);
+});
+
+
+const btnDialogSaida = document.getElementById("btn-dialog-saida");
+btnDialogSaida.addEventListener("click", () => {
+
+    // crie um objeto e salve a data, hora, location, id e type
+    // o id é 1 (fixo)
+    // o type será "saida"
+    // o location pode ser recuperado com a funcao getUserLocation (será undefined por enquanto)
+
+});
+
+const btnDialogFechar = document.getElementById("dialog-fechar");
+btnDialogFechar.addEventListener("click", () => {
+    dialogPonto.close();
+})
+
+function getUserLocation() {
+    navigator.geolocation.getCurrentPosition((position) => {   
+        let userLocation = {
+            "lat": position.coords.latitude,
+            "long": position.coords.longitude
+        }
+        return userLocation;
+    });
+}
+
+
+function register() {
+    dialogPonto.showModal();
+}
+
+
+function updateContentHour() {
     horaAtual.textContent = getCurrentTime();
-
 }
 
-
-
-
-
-
-function getCurrentTime(){
+// Retorna a hora atual (hora/minuto/segundo)
+function getCurrentTime() {
     const date = new Date();
-    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-}
-function getCurrentDate(){
-    const date = new Date();
-
-    const mounth = date.getMonth() + 1;
-
-    return date.getDate() + "/" + mounth + "/" + date.getFullYear();
-
+    return String(date.getHours()).padStart(2, '0') + ":" + String(date.getMinutes()).padStart(2, '0') + ":" + String(date.getSeconds()).padStart(2, '0');
 }
 
-function getWeekDay(){
+// Retorna a data atual no padrão dd/mm/aaaa
+function getCurrentDate() {
+    const date = new Date(); 
+    let mes = date.getMonth() + 1;
+    return String(date.getDate()).padStart(2, '0') + "/" + String(mes).padStart(2, '0') + "/" +  String(date.getFullYear()).padStart(2, '0');
+}
+
+function getWeekDay() {
     const date = new Date()
     const day = date.getDay()
-    const daynames = ["Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado"];
+    const daynames = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
     return daynames[day]
-
-
-
-    return"";
 }
 
+updateContentHour();
 setInterval(updateContentHour, 1000);
+
 console.log(getCurrentTime());
 console.log(getCurrentDate());
+console.log(getWeekDay());
