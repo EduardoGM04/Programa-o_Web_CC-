@@ -1,100 +1,175 @@
+// TO-DO:
+// Organizar código-fonte,
+
 const diaSemana = document.getElementById("dia-semana");
-const dataAtual = document.getElementById("data-atual");
-const horaAtual = document.getElementById("hora-atual");
-const btnRegistrarPonto = document.getElementById("btn-registrar-ponto");
+const diaMesAno = document.getElementById("dia-mes-ano");
+const horaMinSeg = document.getElementById("hora-min-seg");
 
-btnRegistrarPonto.addEventListener("click", register);
-
-diaSemana.textContent = getWeekDay();
-dataAtual.textContent = getCurrentDate();
-
+const btnBaterPonto = document.getElementById("btn-bater-ponto");
+btnBaterPonto.addEventListener("click", register);
 
 const dialogPonto = document.getElementById("dialog-ponto");
 
-const dialogData = document.getElementById("dialog-data");
-dialogData.textContent = getCurrentDate();
-
-const dialogHora = document.getElementById("dialog-hora");
-dialogHora.textContent = getCurrentTime();
-
-
-const btnDialogEntrada = document.getElementById("btn-dialog-entrada");
-btnDialogEntrada.addEventListener("click", () => {
-    
-    let currentDate = getCurrentDate();
-    let currentTime = getCurrentTime();
-    let userLocation = getUserLocation();
-
-    ponto = {
-        "date": currentDate,
-        "time": currentTime,
-        "location": userLocation,
-        "id": 1,
-        "type": "entrada"
-    }
-
-    console.log(ponto);
-});
-
-
-const btnDialogSaida = document.getElementById("btn-dialog-saida");
-btnDialogSaida.addEventListener("click", () => {
-
-    // crie um objeto e salve a data, hora, location, id e type
-    // o id é 1 (fixo)
-    // o type será "saida"
-    // o location pode ser recuperado com a funcao getUserLocation (será undefined por enquanto)
-
-});
-
-const btnDialogFechar = document.getElementById("dialog-fechar");
+const btnDialogFechar = document.getElementById("btn-dialog-fechar");
 btnDialogFechar.addEventListener("click", () => {
     dialogPonto.close();
-})
+});
 
-function getUserLocation() {
-    navigator.geolocation.getCurrentPosition((position) => {   
-        let userLocation = {
-            "lat": position.coords.latitude,
-            "long": position.coords.longitude
-        }
-        return userLocation;
+
+let registerLocalStorage = getRegisterLocalStorage();
+
+const dialogData = document.getElementById("dialog-data");
+const dialogHora = document.getElementById("dialog-hora");
+
+const divAlertaRegistroPonto = document.getElementById("alerta-registro-ponto");
+
+
+diaSemana.textContent = getWeekDay();
+diaMesAno.textContent = getCurrentDate();
+
+
+// TO-DO:
+// Por que esta função não retorna a localização?
+// [doc]
+function getCurrentPosition() {
+    navigator.geolocation.getCurrentPosition((position) => {
+        return position;
     });
 }
 
 
+const typeRegister = document.getElementById("tipos-ponto");
+
+const btnDialogBaterPonto = document.getElementById("btn-dialog-bater-ponto");
+btnDialogBaterPonto.addEventListener("click", () => {
+
+    let lastTypeRegister = localStorage.getItem("lastTypeRegister");
+
+    // TO-DO:
+    // Pq o select não está com a option correspondente?
+    if(lastTypeRegister == "entrada") {
+        console.log("lastTypeRegister é entrada");
+        typeRegister.value = "intervalo";
+    }
+    if(lastTypeRegister == "intervalo") {
+        typeRegister.value = "volta-intervalo";
+    }
+    if(lastTypeRegister == "volta-intervalo") {
+        typeRegister.value = "saida";
+    }
+    if(lastTypeRegister == "saida") {
+        typeRegister.value = "entrada"
+    }
+
+    let ponto = {
+        "data": getCurrentDate(),
+        "hora": getCurrentHour(),
+        "localizacao": getCurrentPosition(),
+        "id": 1,
+        "tipo": typeRegister.value
+    }
+
+    console.log(ponto);
+
+    saveRegisterLocalStorage(ponto);
+
+    localStorage.setItem("lastTypeRegister", typeRegister.value);
+    localStorage.setItem("lastDateRegister", ponto.data);
+    localStorage.setItem("lastTimeRegister", ponto.hora);
+
+    dialogPonto.close();
+
+    // TO-DO:
+    // CRIAR UM ALERTA NO TOPO DA PÁGINA PRINCIPAL PARA CONFIRMAR O REGISTRO DE PONTO
+    // DEVE FICAR ABERTO POR 3 SEGUNDOS E DEVE TER UM EFEITO DE TRANSIÇÃO
+    // DEVE PODER SER FECHADO PELO USUÁRIO QUE NÃO QUISER AGUARDAR 3s
+    // DEVE MOSTRAR UMA MENSAGEM DE SUCESSO AO REGISTRAR O PONTO
+    // CASO OCORRA ALGUM ERRO, MOSTRAR NO ALERTA 
+    // AS CORES DEVEM SER DIFERENTES EM CASO DE SUCESSO/ERRO/ALERTA
+
+    divAlertaRegistroPonto.classList.remove("hidden");
+    divAlertaRegistroPonto.classList.add("show");
+    
+    // TO-DO:
+    // fazer um efeito de transição para o alerta
+
+    setTimeout(() => {
+        divAlertaRegistroPonto.classList.remove("show");
+        divAlertaRegistroPonto.classList.add("hidden");
+    }, 5000);
+
+});
+
+
+function saveRegisterLocalStorage(register) {
+    registerLocalStorage.push(register); // Array
+    localStorage.setItem("register", JSON.stringify(registerLocalStorage));
+} 
+
+
+// Esta função deve retornar sempre um ARRAY, mesmo que seja vazio
+function getRegisterLocalStorage() {
+    let registers = localStorage.getItem("register");
+
+    if(!registers) {
+        return [];
+    }
+
+    return JSON.parse(registers); // converte de JSON para Array
+}
+
+
+// TO-DO:
+// alterar o nome da função
 function register() {
+    // TO-DO:
+    // Atualizar hora a cada segundo e data 00:00:00
+    dialogData.textContent = "Data: " + getCurrentDate();
+    dialogHora.textContent = "Hora: " + getCurrentHour();
+
+    let lastRegisterText = "Último registro: " + localStorage.getItem("lastDateRegister") + " - " + localStorage.getItem("lastTimeRegister") + " | " + localStorage.getItem("lastTypeRegister")
+    document.getElementById("dialog-last-register").textContent = lastRegisterText;
+
     dialogPonto.showModal();
+
+    console.log(localStorage.getItem("lastTypeRegister"));
 }
 
-
-function updateContentHour() {
-    horaAtual.textContent = getCurrentTime();
+function getWeekDay() {
+    const date = new Date();
+    let days = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+    return days[date.getDay()];
 }
 
-// Retorna a hora atual (hora/minuto/segundo)
-function getCurrentTime() {
+function getCurrentHour() {
     const date = new Date();
     return String(date.getHours()).padStart(2, '0') + ":" + String(date.getMinutes()).padStart(2, '0') + ":" + String(date.getSeconds()).padStart(2, '0');
 }
 
-// Retorna a data atual no padrão dd/mm/aaaa
+
 function getCurrentDate() {
-    const date = new Date(); 
-    let mes = date.getMonth() + 1;
-    return String(date.getDate()).padStart(2, '0') + "/" + String(mes).padStart(2, '0') + "/" +  String(date.getFullYear()).padStart(2, '0');
+    // TO-DO:
+    // Alterar a solução para considerar padStart ou slice
+    // Considerar formatos diferentes da data, conforme localização
+    // do usuário dd/mm/aaaa, mm/dd/aaaa, aaaa/mm/dd, aaaa.mm.dd
+    // Verificar se no Date() há algum método que possa auxiliar
+    // locale
+    const date = new Date();
+    let month = date.getMonth();
+    let day = date.getDate();
+    if (day < 10) {
+        day = "0" + day
+    }
+    if (month < 10) {
+        month = "0" + (month + 1)
+    }
+    return day + "/" + month + "/" + date.getFullYear();
 }
 
-function getWeekDay() {
-    const date = new Date()
-    const day = date.getDay()
-    const daynames = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
-    return daynames[day]
+function printCurrentHour() {
+    horaMinSeg.textContent = getCurrentHour();
 }
 
-updateContentHour();
-setInterval(updateContentHour, 1000);
 
-console.log(getCurrentTime());
-console.log(getCurrentDate());
-console.log(getWeekDay());
+printCurrentHour();
+setInterval(printCurrentHour, 1000);
