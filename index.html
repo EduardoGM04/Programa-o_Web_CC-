@@ -3,37 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Controle de Ponto</title>
+    <title>Sistema de Ponto Eletrônico</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div id="alerta-registro-ponto" class="hidden">
-        <p>Ponto registrado com sucesso</p>
-    </div>
     <div class="data-hora">
-        <p id="dia-semana">Segunda-feira</p>
-        <p id="dia-mes-ano">26/08/2024</p>
-        <p id="hora-min-seg">08:01:35</p>
+        <p id="dia-semana"></p>
+        <p id="data-atual"></p>
+        <p id="hora-atual"></p>
     </div>
-    <button id="btn-bater-ponto">Bater ponto!</button>
+    <button id="btn-registrar-ponto">Registrar ponto</button>
+
     <dialog id="dialog-ponto">
-        <!-- TO-DO: -->
-        <!-- Quais outras informações relevantes podemos mostrar para o usuário? -->
         <p id="dialog-data"></p>
         <p id="dialog-hora"></p>
-        <select name="tipos-ponto" id="tipos-ponto">
+        <select name="register-type" id="register-type">
             <option value="entrada">Entrada</option>
             <option value="intervalo">Intervalo</option>
             <option value="volta-intervalo">Volta Intervalo</option>
             <option value="saida">Saída</option>
         </select>
-        <button id="btn-dialog-bater-ponto">Registrar ponto</button>
-        <p id="dialog-last-register"></p>
-        <button id="btn-dialog-fechar">X</button>
+        <button id="btn-dialog-register">Registrar</button>
+        <p id="dialog-ultimo-registro"></p>
+        <button id="dialog-fechar">X</button>
     </dialog>
-    <!-- TO-DO: -->
-    <!-- criar histórico dos últimos n registros-->
-    <!-- criar footer para alerta -->
+
+    <div id="alerta-ponto-registrado" class="hidden">
+        <p>Ponto registrado com sucesso!</p>
+    </div>
+
+
     <script src="js/index.js"></script>
 </body>
 </html>

@@ -2,41 +2,26 @@
     text-align: center;
 }
 
-#btn-dialog-fechar {
+#dialog-fechar {
     position: absolute;
     top: 0;
     right: 0;
+    
 }
 
-/* Posicionamento do alerta no topo da página com position fixed */
-#alerta-registro-ponto {
+#alerta-ponto-registrado {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #ccc;
-    /* TO-DO: */
-    /* posicionar fora da página */
-    /* pode usar o translate no eixo Y */
-    /* usar um efeito de transição */
+    bottom: 10px;
+    right: 10px;
+    padding: 10px;
+    background-color: green;
+    color: white;
 }
 
-#alerta-registro-ponto p {
-    text-align: center;
-    /* TO-DO: */
-    /* Estilizar */
-}
-
-/* TO-DO: */
-/* Adicionar código CSS para alterar a opacidade */
 .hidden {
-    /* TO-DO: */
-    /* enviar para fora da página */
     opacity: 0;
 }
 
 .show {
-    /* TO-DO: */
-    /* trazer para dentro da página */
     opacity: 1;
 }
